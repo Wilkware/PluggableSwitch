@@ -1,0 +1,12 @@
+{
+    "id": "{EE1BFADB-8DCB-188B-FA8D-895382D6AA3B}",
+    "name": "Pluggable Switch",
+    "url": "https://wilkware.de/ip-symcon-module/zwischenstecker/",
+    "type": 3,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "TPS"
+}

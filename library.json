@@ -1,0 +1,12 @@
+{
+    "id": "{E037BEEF-B4CD-C846-E9F2-6BE06094A91C}",
+    "name": "Pluggable Switch",
+    "author": "Wilkware (@Pitti)",
+    "url": "https://wilkware.de",
+    "compatibility": {
+        "version": "7.1"
+    },
+    "version": "1.0",
+    "build": 20241115,
+    "date": 1731672000
+}
