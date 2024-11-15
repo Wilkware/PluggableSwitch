@@ -76,7 +76,7 @@ Das Modul stellt keine direkten Funktionsaufrufe zur Verfügung.
 
 ### 8. Versionshistorie
 
-v1.0.20211210
+v1.0.20241115
 
 * _NEU_: Initialversion
 
