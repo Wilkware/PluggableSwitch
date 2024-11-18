@@ -79,7 +79,7 @@ Das Modul stellt keine direkten Funktionsaufrufe zur Verfügung.
 v1.1.20241118
 
 * _FIX_: Zeitplanindikator durch Timersymbol ersetzt
-* _FIX_: Positioniertung Zeitplansymbol optimiert
+* _FIX_: Positionierung Zeitplansymbol optimiert
 * _NEU_: Inventarnummer eingeführt
 
 v1.0.20241115
