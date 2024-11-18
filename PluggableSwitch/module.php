@@ -44,8 +44,8 @@ class PluggableSwitch extends IPSModule
         $this->RegisterPropertyInteger('DeviceNumber', 0);
         $this->RegisterPropertyInteger('SwitchVariable', 0);
         $this->RegisterPropertyString('SwitchVariables', '[]');
+        $this->RegisterPropertyInteger('InventoryNumber', -1);
         $this->RegisterPropertyInteger('ScriptVariable', 0);
-
         // Schedule
         $this->RegisterPropertyInteger('EventVariable', 0);
 
@@ -106,8 +106,8 @@ class PluggableSwitch extends IPSModule
                 return;
             }
         }
-        $number = $this->ReadPropertyInteger('DeviceNumber');
-        if ($number == self::DEVICE_ONE) {
+        $devices = $this->ReadPropertyInteger('DeviceNumber');
+        if ($devices == self::DEVICE_ONE) {
             $variable = $this->ReadPropertyInteger('SwitchVariable');
             if ($variable >= self::IPS_MIN_ID) {
                 if (IPS_VariableExists($variable)) {
@@ -139,7 +139,7 @@ class PluggableSwitch extends IPSModule
         }
 
         // Register message update for variables
-        if ($number == self::DEVICE_ONE) {
+        if ($devices == self::DEVICE_ONE) {
             $variable = $this->ReadPropertyInteger('SwitchVariable');
             $this->RegisterMessage($variable, VM_UPDATE);
         } else {
@@ -173,9 +173,9 @@ class PluggableSwitch extends IPSModule
         // Get Form
         $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         // number of devices
-        $number = $this->ReadPropertyInteger('DeviceNumber');
-        $form['elements'][2]['items'][1]['visible'] = ($number === self::DEVICE_ONE);
-        $form['elements'][2]['items'][2]['visible'] = ($number === self::DEVICE_MULTIPLE);
+        $devices = $this->ReadPropertyInteger('DeviceNumber');
+        $form['elements'][2]['items'][1]['visible'] = ($devices === self::DEVICE_ONE);
+        $form['elements'][2]['items'][2]['visible'] = ($devices === self::DEVICE_MULTIPLE);
         // device list (set status column)
         $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
         foreach ($variables as $variable) {
@@ -208,8 +208,8 @@ class PluggableSwitch extends IPSModule
             case VM_UPDATE:
                 // single or multiple
                 $variable = 0;
-                $number = $this->ReadPropertyInteger('DeviceNumber');
-                if ($number == self::DEVICE_ONE) {
+                $devices = $this->ReadPropertyInteger('DeviceNumber');
+                if ($devices == self::DEVICE_ONE) {
                     $variable = $this->ReadPropertyInteger('SwitchVariable');
                 } else {
                     $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
@@ -227,11 +227,11 @@ class PluggableSwitch extends IPSModule
                 if ($data[0] == true && $data[1] == true) {
                     // Change on TRUE
                     $this->SendDebug(__FUNCTION__, 'OnChange on TRUE');
-                    $this->ProcessSwitch($number, $sender, true);
+                    $this->ProcessSwitch($devices, $sender, true);
                 } elseif ($data[0] == false && $data[1] == true) {
                     // Change on FALSE
                     $this->SendDebug(__FUNCTION__, 'OnChange on FALSE');
-                    $this->ProcessSwitch($number, $sender, false);
+                    $this->ProcessSwitch($devices, $sender, false);
                 } else {
                     // No change of status
                     //$this->SendDebug(__FUNCTION__, 'OnChange unchanged - status not changed');
@@ -307,8 +307,8 @@ class PluggableSwitch extends IPSModule
             }
         }
         // One or more devices?
-        $number = $this->ReadPropertyInteger('DeviceNumber');
-        if ($number == self::DEVICE_ONE) {
+        $devices = $this->ReadPropertyInteger('DeviceNumber');
+        if ($devices == self::DEVICE_ONE) {
             $variable = $this->ReadPropertyInteger('SwitchVariable');
             if (($variable >= self::IPS_MIN_ID) && (IPS_VariableExists($variable))) {
                 $state = GetValueBoolean($variable);
@@ -322,9 +322,13 @@ class PluggableSwitch extends IPSModule
                 }
             }
         }
+        // Inventory number
+        $number = $this->ReadPropertyInteger('InventoryNumber');
+        // Data
         $result = [
             'state'    => ($state ? 'on' : 'off'),
-            'schedule' => $schedule
+            'schedule' => $schedule,
+            'number'   => (($number > -1) ? sprintf('%02s', $number) : ''),
         ];
         return json_encode($result);
     }
@@ -337,8 +341,8 @@ class PluggableSwitch extends IPSModule
     private function SwitchDevices(bool $state)
     {
         // One or more devices?
-        $number = $this->ReadPropertyInteger('DeviceNumber');
-        if ($number == self::DEVICE_ONE) {
+        $devices = $this->ReadPropertyInteger('DeviceNumber');
+        if ($devices == self::DEVICE_ONE) {
             $variable = $this->ReadPropertyInteger('SwitchVariable');
             if (($variable >= self::IPS_MIN_ID) && (IPS_VariableExists($variable))) {
                 if (HasAction($variable)) {
@@ -380,13 +384,13 @@ class PluggableSwitch extends IPSModule
     /**
      * Process changing switch state an send it to visualisation.
      *
-     * @param int $number witch group of devices (single or multiple)
+     * @param int $devices witch group of devices (single or multiple)
      * @param int $device the triggering device
      * @param bool $state switch state (on or off)
      */
-    private function ProcessSwitch(int $number, int $device, bool $state)
+    private function ProcessSwitch(int $devices, int $device, bool $state)
     {
-        if (($number == self::DEVICE_MULTIPLE) && ($state == false)) {
+        if (($devices == self::DEVICE_MULTIPLE) && ($state == false)) {
             $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
             foreach ($variables as $variable) {
                 $value = GetValueBoolean($variable['VariableID']);

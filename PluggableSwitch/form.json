@@ -74,11 +74,20 @@
                     ]
                 },
                 {
+                    "type": "NumberSpinner",
+                    "name": "InventoryNumber",
+                    "caption": "Inventory number:",
+                    "minimum": -1,
+                    "maximum": 99,
+                    "width": "250px"
+                },
+                {
                     "type": "SelectScript",
                     "name": "ScriptVariable",
                     "caption": "Simultaneous execution of a script:",
                     "width": "450px",
-                    "enabled": false
+                    "enabled": false,
+                    "visible": false
                 }
             ]
         },

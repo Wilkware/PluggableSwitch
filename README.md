@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 [![Product](https://img.shields.io/badge/Symcon%20Version-7.1-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-1.0.20241115-orange.svg)](https://github.com/Wilkware/PluggableSwitch)
+[![Version](https://img.shields.io/badge/Modul%20Version-1.1.20241118-orange.svg)](https://github.com/Wilkware/PluggableSwitch)
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Actions](https://github.com/Wilkware/PluggableSwitch/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/PluggableSwitch/actions)
 
@@ -75,6 +75,12 @@ Ein kleiner Indikator (rechts unten) zeigt an, ob ein aktives Zeitprogramm hinte
 Das Modul stellt keine direkten Funktionsaufrufe zur Verfügung.
 
 ### 8. Versionshistorie
+
+v1.1.20241118
+
+* _FIX_: Zeitplanindikator durch Timersymbol ersetzt
+* _FIX_: Positioniertung Zeitplansymbol optimiert
+* _NEU_: Inventarnummer eingeführt
 
 v1.0.20241115
 
