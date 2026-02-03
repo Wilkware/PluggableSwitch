@@ -1,10 +1,11 @@
 # Zwischenstecker (Pluggable Switch)
 
-[![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Product](https://img.shields.io/badge/Symcon%20Version-7.1-blue.svg)](https://www.symcon.de/produkt/)
-[![Version](https://img.shields.io/badge/Modul%20Version-1.1.20241118-orange.svg)](https://github.com/Wilkware/PluggableSwitch)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-[![Actions](https://github.com/Wilkware/PluggableSwitch/workflows/Check%20Style/badge.svg)](https://github.com/Wilkware/PluggableSwitch/actions)
+[![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg?style=flat-square)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
+[![Product](https://img.shields.io/badge/Symcon%20Version-8.1-blue.svg?style=flat-square)](https://www.symcon.de/produkt/)
+[![Version](https://img.shields.io/badge/Modul%20Version-2.0.20260203-orange.svg?style=flat-square)](https://github.com/Wilkware/RfxPluggableSwitch2COM)
+[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![Actions](https://img.shields.io/github/actions/workflow/status/wilkware/PluggableSwitch/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/Wilkware/PluggableSwitch/actions)
+
 
 Das Modul erlaubt das Schalten von elektrischen Geräten einfach und zeitgesteuert für verschiedene Szenarien mit einer steckbaren Steckdose (Zwischenstecker).  
 
@@ -29,7 +30,7 @@ Das Modul erlaubt das Schalten von elektrischen Geräten einfach und zeitgesteue
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 7.1
+* IP-Symcon ab Version 8.1
 
 ### 3. Installation
 
@@ -45,7 +46,7 @@ __Konfigurationsseite__:
 
 Einstellungsbereich:
 
-> Steckdose(n) ...
+> 🔌 Steckdose(n) ...
 
 Name                 | Beschreibung
 -------------------- | ---------------------------------
@@ -53,7 +54,7 @@ Geräteanzahl         | 'Ein Gerät' oder 'Mehrere Geräte' - Umschalten zwische
 Schaltvariable*      | Zielvariable, die bei hinreichender Bedingung geschalten wird (true). *[Ein Gerät]
 Schaltvariablen*     | Zielvariablen, welche alle bei hinreichender Bedingung geschalten werden (true). *[Mehrere Geräte]
 
-> Zeitsteuerung ...
+> ⏱️ Zeitsteuerung ...
 
 Name                 | Beschreibung
 -------------------- | ---------------------------------
@@ -75,6 +76,15 @@ Ein kleiner Indikator (rechts unten) zeigt an, ob ein aktives Zeitprogramm hinte
 Das Modul stellt keine direkten Funktionsaufrufe zur Verfügung.
 
 ### 8. Versionshistorie
+
+v2.0.20260203
+
+* _NEU_: Umstellung von Profilen auf Darstellungen
+* _NEU_: Modulversion wird in Quellcodesektion angezeigt
+* _NEU_: Projektumstrukturierung hin zu einer globalen CI/CD-Pipeline
+* _NEU_: Umstellung auf IPSModuleStrict
+* _NEU_: Kompatibilität auf IPS 8.1 hoch gesetzt
+* _FIX_: Bibliotheksfunktionen angeglichen
 
 v1.1.20241118
 

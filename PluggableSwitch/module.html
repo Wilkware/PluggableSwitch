@@ -50,7 +50,7 @@
         function handleMessage(data) {
             const decodedData = JSON.parse(data);
             for (const parameter in decodedData) {
-                console.log(parameter + ': ' + decodedData[parameter]);
+                // console.log(parameter + ': ' + decodedData[parameter]);
                 switch (parameter) {
                     case 'state':
                         var button = document.getElementById("button");
@@ -100,7 +100,7 @@
     <div id="card">
         <svg id="number" width="15%" height="15%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="1" y="1" width="22" height="22" rx="2" stroke="var(--content-color, white)" stroke-width="2" fill="none" opacity="0"/>
-            <text id="number_id" x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="var(--content-color, white)"></text>
+            <text id="number_id" x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" fill="var(--content-color, white)"/>
         </svg>
         <svg id="schedule" width="18%" height="18%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill="var(--content-color, white)" d="M23 12c0 .35-.02.71-.05 1.05-.57-.57-1.24-1.04-1.96-1.38-.18-4.81-4.14-8.66-9-8.66C7.03 3 3.01 7.03 3.01 12c0 4.86 3.85 8.83 8.66 9 .34.73.81 1.39 1.38 1.95-.34.03-.69.05-1.05.05C5.92 23 1 18.08 1 12S5.92 1 12 1s11 4.92 11 11z"/>
@@ -116,9 +116,9 @@
             <circle id="glow" cx="50" cy="50" fill="none" r="40" stroke="#FFFFFF" stroke-width="10" stroke-opacity="0.2">
                 <animate id="dash" attributeName="r" from="45" to="55" dur="0.3s" begin="indefinite" />
             </circle>
-            <circle id="sphere" cx="50" cy="50" r="50"></circle>
+            <circle id="sphere" cx="50" cy="50" r="50"/>
             <circle id="ring" fill="none" stroke="#fff" stroke-width="4" cx="50" cy="50" r="48" stroke-linecap="round" transform="rotate(-90 ) translate(-100 0)" stroke-opacity="0.6">    
-                <animate id="rotate" attributeName="stroke-dashoffset" begin="indefinite" values="360;0" dur="0.5s" repeatCount="1"></animate>
+                <animate id="rotate" attributeName="stroke-dashoffset" begin="indefinite" values="360;0" dur="0.5s" repeatCount="1"/>
             </circle>
             <g id="socket">
                 <circle cx="50" cy="50" r="25" fill="none" stroke="white" stroke-width="4"/>

@@ -7,7 +7,7 @@
  *
  * @package       traits
  * @author        Heiko Wilknitz <heiko@wilkware.de>
- * @copyright     2020 Heiko Wilknitz
+ * @copyright     2025 Heiko Wilknitz
  * @link          https://wilkware.de
  * @license       https://creativecommons.org/licenses/by-nc-sa/4.0/ CC BY-NC-SA 4.0
  */
@@ -174,12 +174,6 @@ if (!defined('IS_ACTIVE')) {
     // --- ERROR CODES
     define('IS_EBASE', 200);                                    // Default errorcode
     define('IS_NOTCREATED', IS_EBASE + 1);                      // Instance could not be created
-}
-if (!defined('vtBoolean')) {
-    define('vtBoolean', 0);
-    define('vtInteger', 1);
-    define('vtFloat', 2);
-    define('vtString', 3);
 }
 
 /**

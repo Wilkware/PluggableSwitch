@@ -5,37 +5,75 @@ declare(strict_types=1);
 // Generell funktions
 require_once __DIR__ . '/../libs/_traits.php';
 
-// CLASS PluggableSwitch
-class PluggableSwitch extends IPSModule
+// PluggableSwitch
+class PluggableSwitch extends IPSModuleStrict
 {
+    // Helper Traits
     use DebugHelper;
     use EventHelper;
     use ProfileHelper;
     use VariableHelper;
 
-    // Schedule constant
+    /**
+     * @var int Schedule OFF(1)
+     */
     public const SCHEDULE_OFF = 1;
+
+    /**
+     * @var int Schedule ON(2)
+     */
     public const SCHEDULE_ON = 2;
+
+    /**
+     * @var string Schedule Name
+     */
     public const SCHEDULE_NAME = 'Zeitplan';
+
+    /**
+     * @var string Schedule Ident
+     */
     public const SCHEDULE_IDENT = 'CircuitDiagram';
+
+    /**
+     * @var array<int,mixed> Schedule Switch
+     */
     public const SCHEDULE_SWITCH = [
         self::SCHEDULE_OFF => ['OFF', 0xFF0000, "IPS_RequestAction(\$_IPS['TARGET'], 'CircuitDiagram', \$_IPS['ACTION']);"],
         self::SCHEDULE_ON  => ['ON', 0x00FF00, "IPS_RequestAction(\$_IPS['TARGET'], 'CircuitDiagram', \$_IPS['ACTION']);"],
     ];
 
-    // Devices constant
+    /**
+     * @var int Single Device
+     */
     private const DEVICE_ONE = 0;
+
+    /**
+     * @var int Multiple Devices
+     */
     private const DEVICE_MULTIPLE = 1;
 
-    // Min IPS Object ID
+    /**
+     * @var int Minimum valid IPS Object ID
+     */
     private const IPS_MIN_ID = 10000;
+
+    /**
+     * @var array<string,mixed> Textbox Presentation (Input)
+     */
+    private const TPS_PRESENTATION_TEXT = [
+        'PRESENTATION' => VARIABLE_PRESENTATION_VALUE_INPUT,
+        'SUFFIX'       => '',
+        'PREFIX'       => '',
+        'MULTILINE'    => false,
+    ];
 
     /**
      * In contrast to Construct, this function is called only once when creating the instance and starting IP-Symcon.
      * Therefore, status variables and module properties which the module requires permanently should be created here.
      *
+     * @return void
      */
-    public function Create()
+    public function Create(): void
     {
         //Never delete this line!
         parent::Create();
@@ -57,18 +95,53 @@ class PluggableSwitch extends IPSModule
      * This function is called when deleting the instance during operation and when updating via "Module Control".
      * The function is not called when exiting IP-Symcon.
      *
+     * @return void
      */
-    public function Destroy()
+    public function Destroy(): void
     {
         // Never delete this line!
         parent::Destroy();
     }
 
     /**
+     * The content can be overwritten in order to transfer a self-created configuration page.
+     * This way, content can be generated dynamically.
+     * In this case, the "form.json" on the file system is completely ignored.
+     *
+     * @return string Content of the configuration page.
+     */
+    public function GetConfigurationForm(): string
+    {
+        // Get Form
+        $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+        // number of devices
+        $devices = $this->ReadPropertyInteger('DeviceNumber');
+        $form['elements'][1]['items'][1]['visible'] = ($devices === self::DEVICE_ONE);
+        $form['elements'][1]['items'][2]['visible'] = ($devices === self::DEVICE_MULTIPLE);
+        // device list (set status column)
+        $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
+        foreach ($variables as $variable) {
+            $form['elements'][1]['items'][2]['values'][] = [
+                'Status' => $this->GetVariableStatus($variable['VariableID']),
+            ];
+        }
+
+        // Extract Version
+        $ins = IPS_GetInstance($this->InstanceID);
+        $mod = IPS_GetModule($ins['ModuleInfo']['ModuleID']);
+        $lib = IPS_GetLibrary($mod['LibraryID']);
+        $form['actions'][0]['items'][2]['caption'] = sprintf('v%s.%d', $lib['Version'], $lib['Build']);
+
+        // return form
+        return json_encode($form);
+    }
+
+    /**
      * Is executed when "Apply" is pressed on the configuration page and immediately after the instance has been created.
      *
+     * @return void
      */
-    public function ApplyChanges()
+    public function ApplyChanges(): void
     {
         // Never delete this line!
         parent::ApplyChanges();
@@ -91,7 +164,7 @@ class PluggableSwitch extends IPSModule
             if (IPS_EventExists($event)) {
                 $this->RegisterReference($event);
             } else {
-                $this->SendDebug(__FUNCTION__, 'Event does not exist - Variable: ' . $event);
+                $this->LogDebug(__FUNCTION__, 'Event does not exist - Variable: ' . $event);
                 $this->SetStatus(104);
                 return;
             }
@@ -101,7 +174,7 @@ class PluggableSwitch extends IPSModule
             if (IPS_ScriptExists($script)) {
                 $this->RegisterReference($script);
             } else {
-                $this->SendDebug(__FUNCTION__, 'Script does not exist - Variable: ' . $script);
+                $this->LogDebug(__FUNCTION__, 'Script does not exist - Variable: ' . $script);
                 $this->SetStatus(104);
                 return;
             }
@@ -113,7 +186,7 @@ class PluggableSwitch extends IPSModule
                 if (IPS_VariableExists($variable)) {
                     $this->RegisterReference($variable);
                 } else {
-                    $this->SendDebug(__FUNCTION__, 'Switch does not exist - Variable: ' . $variable);
+                    $this->LogDebug(__FUNCTION__, 'Switch does not exist - Variable: ' . $variable);
                     $this->SetStatus(104);
                     return;
                 }
@@ -125,12 +198,12 @@ class PluggableSwitch extends IPSModule
                     if (IPS_VariableExists($variable['VariableID'])) {
                         $this->RegisterReference($variable['VariableID']);
                         if ($this->GetVariableStatus($variable['VariableID']) != 'OK') {
-                            $this->SendDebug(__FUNCTION__, 'Switch does not exist - Variables: ' . $variable['VariableID']);
+                            $this->LogDebug(__FUNCTION__, 'Switch does not exist - Variables: ' . $variable['VariableID']);
                             $this->SetStatus(104);
                             return;
                         }
                     } else {
-                        $this->SendDebug(__FUNCTION__, 'Switch does not exist - Variables: ' . $variable['VariableID']);
+                        $this->LogDebug(__FUNCTION__, 'Switch does not exist - Variables: ' . $variable['VariableID']);
                         $this->SetStatus(104);
                         return;
                     }
@@ -150,7 +223,7 @@ class PluggableSwitch extends IPSModule
         }
 
         // Maintain variables
-        $this->MaintainVariable('Label', $this->Translate('Labelling'), VARIABLETYPE_STRING, '~TextBox', 1, true);
+        $this->MaintainVariable('Label', $this->Translate('Labelling'), VARIABLETYPE_STRING, self::TPS_PRESENTATION_TEXT, 1, true);
         $this->EnableAction('Label');
         $this->SetValueString('Label', IPS_GetName($this->InstanceID));
 
@@ -162,32 +235,6 @@ class PluggableSwitch extends IPSModule
     }
 
     /**
-     * The content can be overwritten in order to transfer a self-created configuration page.
-     * This way, content can be generated dynamically.
-     * In this case, the "form.json" on the file system is completely ignored.
-     *
-     * @return JSON Content of the configuration page
-     */
-    public function GetConfigurationForm()
-    {
-        // Get Form
-        $form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-        // number of devices
-        $devices = $this->ReadPropertyInteger('DeviceNumber');
-        $form['elements'][2]['items'][1]['visible'] = ($devices === self::DEVICE_ONE);
-        $form['elements'][2]['items'][2]['visible'] = ($devices === self::DEVICE_MULTIPLE);
-        // device list (set status column)
-        $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
-        foreach ($variables as $variable) {
-            $form['elements'][2]['items'][2]['values'][] = [
-                'Status' => $this->GetVariableStatus($variable['VariableID']),
-            ];
-        }
-        // return form
-        return json_encode($form);
-    }
-
-    /**
      * The content of the function can be overwritten in order to carry out own reactions to certain messages.
      * The function is only called for registered MessageIDs/SenderIDs combinations.
      *
@@ -196,14 +243,15 @@ class PluggableSwitch extends IPSModule
      * data[2] = old value
      * data[3] = timestamp.
      *
-     * @param mixed $timestamp Continuous counter timestamp
-     * @param mixed $sender Sender ID
-     * @param mixed $message ID of the message
-     * @param mixed $data Data of the message
+     * @param int   $timestamp Continuous counter timestamp
+     * @param int   $sender    Sender ID
+     * @param int   $message   ID of the message
+     * @param array{0:mixed,1:bool,2:mixed,3:int} $data Data of the message
+     * @return void
      */
-    public function MessageSink($timestamp, $sender, $message, $data)
+    public function MessageSink(int $timestamp, int $sender, int $message, array $data): void
     {
-        //$this->SendDebug(__FUNCTION__, 'SenderId: ' . $sender . ' Data: ' . $this->DebugPrint($data), 0);
+        //$this->LogDebug(__FUNCTION__, 'SenderId: ' . $sender . ' Data: ' . $this->DebugPrint($data), 0);
         switch ($message) {
             case VM_UPDATE:
                 // single or multiple
@@ -226,15 +274,15 @@ class PluggableSwitch extends IPSModule
                 // Check of change
                 if ($data[0] == true && $data[1] == true) {
                     // Change on TRUE
-                    $this->SendDebug(__FUNCTION__, 'OnChange on TRUE');
+                    $this->LogDebug(__FUNCTION__, 'OnChange on TRUE');
                     $this->ProcessSwitch($devices, $sender, true);
                 } elseif ($data[0] == false && $data[1] == true) {
                     // Change on FALSE
-                    $this->SendDebug(__FUNCTION__, 'OnChange on FALSE');
+                    $this->LogDebug(__FUNCTION__, 'OnChange on FALSE');
                     $this->ProcessSwitch($devices, $sender, false);
                 } else {
                     // No change of status
-                    //$this->SendDebug(__FUNCTION__, 'OnChange unchanged - status not changed');
+                    //$this->LogDebug(__FUNCTION__, 'OnChange unchanged - status not changed');
                 }
                 break;
         }
@@ -243,13 +291,14 @@ class PluggableSwitch extends IPSModule
     /**
      * Is called when, for example, a button is clicked in the visualization.
      *
-     *  @param string $ident Ident of the variable
-     *  @param string $value The value to be set
+     * @param string $ident Ident of the variable
+     * @param mixed $value The value to be set
+     * @return void
      */
-    public function RequestAction($ident, $value)
+    public function RequestAction(string $ident, mixed $value): void
     {
         // Debug output
-        $this->SendDebug(__FUNCTION__, $ident . ' => ' . $value);
+        $this->LogDebug(__FUNCTION__, $ident . ' => ' . $value);
         // Ident == OnXxxxxYyyyy
         switch ($ident) {
             case 'CircuitDiagram':
@@ -264,18 +313,23 @@ class PluggableSwitch extends IPSModule
             case 'Button':
                 $this->SwitchDevices($value);
                 break;
+            case 'OnDeviceNumber':
+                $this->OnDeviceNumber($value);
+                break;
+            case 'OnCreateSchedule':
+                $this->OnCreateSchedule($value);
+                // No break. Add additional comment above this line if intentional!
             default:
                 eval('$this->' . $ident . '(\'' . $value . '\');');
         }
-        //return true;
     }
 
     /**
      * If the HTML-SDK is to be used, this function must be overwritten in order to return the HTML content.
      *
-     * @return String Initial display of a representation via HTML SDK
+     * @return string Initial display of a representation via HTML SDK
      */
-    public function GetVisualizationTile()
+    public function GetVisualizationTile(): string
     {
         // Add a script to set the values when loading, analogous to changes at runtime
         // Although the return from GetFullUpdateMessage is already JSON-encoded, json_encode is still executed a second time
@@ -291,9 +345,9 @@ class PluggableSwitch extends IPSModule
     /**
      * Generate a message that updates all elements in the HTML display.
      *
-     * @return String JSON encoded message information
+     * @return string JSON encoded message information
      */
-    private function GetFullUpdateMessage()
+    private function GetFullUpdateMessage(): string
     {
         // dataset variable
         $schedule = 0;
@@ -337,8 +391,9 @@ class PluggableSwitch extends IPSModule
      * Switch device(s) to the passed state.
      *
      * @param bool $state
+     * @return void
      */
-    private function SwitchDevices(bool $state)
+    private function SwitchDevices(bool $state): void
     {
         // One or more devices?
         $devices = $this->ReadPropertyInteger('DeviceNumber');
@@ -369,10 +424,11 @@ class PluggableSwitch extends IPSModule
      * A schedule event occur and so switch the device(s)
      *
      * @param integer $value Action value (OFF=1, ON=2)
+     * @return void
      */
-    private function ProcessSchedule(int $value)
+    private function ProcessSchedule(int $value): void
     {
-        $this->SendDebug(__FUNCTION__, 'Value: ' . $value);
+        $this->LogDebug(__FUNCTION__, 'Value: ' . $value);
         // Is Activate ON
         $state = false;
         if ($value == self::SCHEDULE_ON) {
@@ -387,8 +443,9 @@ class PluggableSwitch extends IPSModule
      * @param int $devices witch group of devices (single or multiple)
      * @param int $device the triggering device
      * @param bool $state switch state (on or off)
+     * @return void
      */
-    private function ProcessSwitch(int $devices, int $device, bool $state)
+    private function ProcessSwitch(int $devices, int $device, bool $state): void
     {
         if (($devices == self::DEVICE_MULTIPLE) && ($state == false)) {
             $variables = json_decode($this->ReadPropertyString('SwitchVariables'), true);
@@ -408,8 +465,9 @@ class PluggableSwitch extends IPSModule
      * Received the status of a given variable
      *
      * @param int $vid variable ID.
+     * @return string status message
      */
-    private function GetVariableStatus($vid)
+    private function GetVariableStatus($vid): string
     {
         if (!IPS_VariableExists($vid)) {
             return $this->Translate('Missing');
@@ -444,11 +502,12 @@ class PluggableSwitch extends IPSModule
      * Creates a schedule plan.
      *
      * @param string $value instance ID.
+     * @return void
      */
-    private function OnCreateSchedule($value)
+    private function OnCreateSchedule($value): void
     {
         $eid = $this->CreateWeeklySchedule($this->InstanceID, self::SCHEDULE_NAME, self::SCHEDULE_IDENT, self::SCHEDULE_SWITCH, -1);
-        if ($eid !== false) {
+        if ($eid >= self::IPS_MIN_ID) {
             $this->UpdateFormField('EventVariable', 'value', $eid);
         }
     }
@@ -457,10 +516,11 @@ class PluggableSwitch extends IPSModule
      * User has select an new number of devices.
      *
      * @param string $value select value.
+     * @return void
      */
-    private function OnDeviceNumber($value)
+    private function OnDeviceNumber($value): void
     {
-        $this->SendDebug(__FUNCTION__, 'Value: ' . $value);
+        $this->LogDebug(__FUNCTION__, 'Value: ' . $value);
         $this->UpdateFormField('SwitchVariable', 'visible', ($value == self::DEVICE_ONE));
         $this->UpdateFormField('SwitchVariables', 'visible', ($value == self::DEVICE_MULTIPLE));
     }
