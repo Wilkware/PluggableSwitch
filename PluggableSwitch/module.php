@@ -2,60 +2,62 @@
 
 declare(strict_types=1);
 
-// Generell funktions
+/** Generell funktions */
 require_once __DIR__ . '/../libs/_traits.php';
 
-// PluggableSwitch
+/** Namespaced traits */
+use Wilkware\PluggableSwitch\DebugHelper;
+use Wilkware\PluggableSwitch\EventHelper;
+use Wilkware\PluggableSwitch\VariableHelper;
+
+/**
+ * CLASS PluggableSwitch
+ */
 class PluggableSwitch extends IPSModuleStrict
 {
+    // -------------------------------------------------------------------------
+    // Traits
+    // -------------------------------------------------------------------------
+
     // Helper Traits
     use DebugHelper;
     use EventHelper;
-    use ProfileHelper;
     use VariableHelper;
 
-    /**
-     * @var int Schedule OFF(1)
-     */
+    // -------------------------------------------------------------------------
+    // Constants
+    // -------------------------------------------------------------------------
+
+    /** @var int Schedule OFF(1) */
     public const SCHEDULE_OFF = 1;
 
-    /**
-     * @var int Schedule ON(2)
-     */
+    /** @var int Schedule ON(2) */
     public const SCHEDULE_ON = 2;
 
-    /**
-     * @var string Schedule Name
-     */
+    /** @var string Schedule Name */
     public const SCHEDULE_NAME = 'Zeitplan';
 
-    /**
-     * @var string Schedule Ident
-     */
+    /** @var string Schedule Ident */
     public const SCHEDULE_IDENT = 'CircuitDiagram';
 
-    /**
-     * @var array<int,mixed> Schedule Switch
-     */
+    /** @var array<int,mixed> Schedule Switch */
     public const SCHEDULE_SWITCH = [
         self::SCHEDULE_OFF => ['OFF', 0xFF0000, "IPS_RequestAction(\$_IPS['TARGET'], 'CircuitDiagram', \$_IPS['ACTION']);"],
         self::SCHEDULE_ON  => ['ON', 0x00FF00, "IPS_RequestAction(\$_IPS['TARGET'], 'CircuitDiagram', \$_IPS['ACTION']);"],
     ];
 
-    /**
-     * @var int Single Device
-     */
+    /** @var int Single Device */
     private const DEVICE_ONE = 0;
 
-    /**
-     * @var int Multiple Devices
-     */
+    /** @var int Multiple Devices */
     private const DEVICE_MULTIPLE = 1;
 
-    /**
-     * @var int Minimum valid IPS Object ID
-     */
+    /** @var int Minimum valid IPS Object ID */
     private const IPS_MIN_ID = 10000;
+
+    // -------------------------------------------------------------------------
+    // Presentations
+    // -------------------------------------------------------------------------
 
     /**
      * @var array<string,mixed> Textbox Presentation (Input)
@@ -66,6 +68,10 @@ class PluggableSwitch extends IPSModuleStrict
         'PREFIX'       => '',
         'MULTILINE'    => false,
     ];
+
+    // -------------------------------------------------------------------------
+    // Methods
+    // -------------------------------------------------------------------------
 
     /**
      * In contrast to Construct, this function is called only once when creating the instance and starting IP-Symcon.

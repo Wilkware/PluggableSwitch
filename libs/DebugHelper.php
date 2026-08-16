@@ -14,6 +14,10 @@
 
 declare(strict_types=1);
 
+/** @symcon-namespace */
+
+namespace Wilkware\PluggableSwitch;
+
 /**
  * Helper class for the debug output.
  */
