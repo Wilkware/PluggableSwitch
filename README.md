@@ -1,5 +1,6 @@
 # 🔌 Zwischenstecker (Pluggable Switch)
 
+[![Home](https://img.shields.io/badge/Home-wilkware.de-0b1830.svg?style=flat-square)](https://wilkware.de/module/zwischenstecker/)
 [![Version](https://img.shields.io/badge/Symcon-PHP--Modul-red.svg?style=flat-square)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
 [![Product](https://img.shields.io/badge/Symcon%20Version-8.1-blue.svg?style=flat-square)](https://www.symcon.de/produkt/)
 [![Version](https://img.shields.io/badge/Modul%20Version-2.0.20260203-orange.svg?style=flat-square)](https://github.com/Wilkware/RfxPluggableSwitch2COM)
@@ -14,11 +15,12 @@ Das Modul erlaubt das Schalten von elektrischen Geräten einfach und zeitgesteue
 1. [Funktionsumfang](#user-content-1-funktionsumfang)
 2. [Voraussetzungen](#user-content-2-voraussetzungen)
 3. [Installation](#user-content-3-installation)
-4. [Einrichten der Instanzen in IP-Symcon](#user-content-4-einrichten-der-instanzen-in-ip-symcon)
-5. [Statusvariablen und Profile](#user-content-5-statusvariablen-und-profile)
-6. [Visualisierung](#user-content-6-visualisierung)
-7. [PHP-Befehlsreferenz](#user-content-7-php-befehlsreferenz)
-8. [Versionshistorie](#user-content-8-versionshistorie)
+4. [Einrichtung](#user-content-4-einrichtung)
+5. [Statusvariablen](#user-content-5-statusvariablen)
+6. [Darstellungen](#user-content-6-darstellungen)
+7. [Visualisierung](#user-content-7-visualisierung)
+8. [Befehlsreferenz](#user-content-8-befehlsreferenz)
+9. [Versionshistorie](#user-content-9-versionshistorie)
 
 ### 1. Funktionsumfang
 
@@ -30,17 +32,17 @@ Das Modul erlaubt das Schalten von elektrischen Geräten einfach und zeitgesteue
 
 ### 2. Voraussetzungen
 
-* IP-Symcon ab Version 8.1
+* Symcon ab Version 8.1
 
 ### 3. Installation
 
-* Über den Modul Store das Modul _Pluggable Switch_ bzw. _Zwischenstecker_ installieren.
-* Alternativ Über das Modul-Control folgende URL hinzufügen.  
+* Über den Modul Store das Modul _Zwischenstecker_ installieren.
+* Alternativ über das Modul Control folgende URL hinzufügen.  
 `https://github.com/Wilkware/PluggableSwitch` oder `git://github.com/Wilkware/PluggableSwitch.git`
 
-### 4. Einrichten der Instanzen in IP-Symcon
+### 4. Einrichtung
 
-* Unter 'Instanz hinzufügen' ist das _PluggableSwitch_-Modul (_Zwischenstecker_) unter dem Hersteller '(Geräte)' aufgeführt.
+* Unter 'Instanz hinzufügen' ist das _Zwischenstecker_-Modul unter dem Hersteller '(Geräte)' aufgeführt.
 
 __Konfigurationsseite__:
 
@@ -61,21 +63,33 @@ Name                 | Beschreibung
 Zeitplan             | Wochenprogram, welches die Steckdose(n) zeitgesteuert an- bzw. ausschaltet.
 ZEITPLAN HINZUFÜGEN  | Button zum Erzeugen und Hinzufügen eines Wochenprogrammes.
 
-### 5. Statusvariablen und Profile
+### 5. Statusvariablen
 
-Es werden keine zusätzlichen Statusvariablen/Profile benötigt.
+Die Statusvariablen werden automatisch angelegt. Das Löschen einzelner kann zu Fehlfunktionen führen.
 
-### 6. Visualisierung
+Name                 | Typ     | Beschreibung
+-------------------- | ------- | ------------------------------
+Beschriftung         | String  | Bezeichnung des Zwischensteckers, eine Änderung benennt die Instanz um (On-the-fly Umbenennung)
+
+### 6. Darstellungen
+
+Die Darstellungen werden direkt an den Statusvariablen hinterlegt, es werden keine Profile angelegt.
+
+Variable             | Darstellung   | Werte
+-------------------- | ------------- | ------------------------------
+Beschriftung         | Werteingabe   | Freitext (einzeilig)
+
+### 7. Visualisierung
 
 Das Modul kann direkt als Link in die TileVisu eingehangen werden.  
 Als Kachel wird der Zustand der Steckdose(n) ähnlich einem normalen Licht-Schalter dargestellt
 Ein kleiner Indikator (rechts unten) zeigt an, ob ein aktives Zeitprogramm hinterlegt ist (grün).
 
-### 7. PHP-Befehlsreferenz
+### 8. Befehlsreferenz
 
 Das Modul stellt keine direkten Funktionsaufrufe zur Verfügung.
 
-### 8. Versionshistorie
+### 9. Versionshistorie
 
 v2.0.20260203
 
@@ -98,7 +112,7 @@ v1.0.20241115
 
 ## Entwickler
 
-Seit nunmehr über 10 Jahren fasziniert mich das Thema Haussteuerung. In den letzten Jahren betätige ich mich auch intensiv in der IP-Symcon Community und steuere dort verschiedenste Skript und Module bei. Ihr findet mich dort unter dem Namen @pitti ;-)
+Seit nunmehr über 10 Jahren fasziniert mich das Thema Haussteuerung. In den letzten Jahren betätige ich mich auch intensiv in der Symcon Community und steuere dort verschiedenste Skript und Module bei. Ihr findet mich dort unter dem Namen @pitti ;-)
 
 [![GitHub](https://img.shields.io/badge/GitHub-@wilkware-181717.svg?style=for-the-badge&logo=github)](https://wilkware.github.io/)
 
